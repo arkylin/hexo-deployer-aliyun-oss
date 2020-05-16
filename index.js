@@ -16,6 +16,8 @@ hexo.extend.deployer.register('ali-oss', function(args){
         fs.writeFileSync(path.join(__dirname,'public_md5.json'), a)
     }
     const public_md5 = JSON.parse(fs.readFileSync(path.join(__dirname,'public_md5.json'), 'utf8'));
+    var a = public_md5;
+    var nums = 0;
 
     // 获取需要部署的文件 
 
@@ -60,10 +62,7 @@ hexo.extend.deployer.register('ali-oss', function(args){
     //写入Json函数
     function write_Json(File_name, New_md5){
         //var a = JSON.parse(fs.readFileSync(path.join(__dirname,'public_md5.json'), 'utf8'));
-        var a = public_md5
-        a[File_name] = New_md5;
-        a = JSON.stringify(a, null, "\t");
-        fs.writeFileSync(path.join(__dirname,'public_md5.json'), a)
+        a[File_name] = New_md5
     }
     //计算MD5函数
     //function get_Md5(localPathName){
@@ -75,6 +74,18 @@ hexo.extend.deployer.register('ali-oss', function(args){
     // 上传文件到oss
       
     // 判断public目录是否存在 
+    function put_MD5 (f){
+        var localPathName_MD5 = crypto.createHash('md5').update(fs.readFileSync(f, 'utf8')).digest('hex');
+        if(localPathName_MD5 != public_md5[f]){
+        //    console.log("1")
+        //    put(f)
+        //}
+        //console.log(get_Md5(f))
+            put(f)
+            write_Json(f,localPathName_MD5)
+        }
+    }
+
     async function put (localPath,AgainNum=0) {
         // 生成对象KEY
         var objectKey = path.join(remoteDir,localPath.split(localDir)[1])
@@ -103,7 +114,7 @@ hexo.extend.deployer.register('ali-oss', function(args){
     rd.eachFileSync(localDir, function (f) {
         // 每找到一个文件都会调用一次此函数
         //判断MD5值是否匹配
-        var localPathName_MD5 = crypto.createHash('md5').update(f).digest('hex');
+        var localPathName_MD5 = crypto.createHash('md5').update(fs.readFileSync(f, 'utf8')).digest('hex');
         if(localPathName_MD5 != public_md5[f]){
         //    console.log("1")
         //    put(f)
@@ -111,8 +122,13 @@ hexo.extend.deployer.register('ali-oss', function(args){
         //console.log(get_Md5(f))
             put(f)
             write_Json(f,localPathName_MD5)
+        }else{
+            nums = nums + 1;
         }
     });
+    a = JSON.stringify(a, null, "\t");
+    fs.writeFileSync(path.join(__dirname,'public_md5.json'), a)
     console.log("oss部署器执行完毕！请稍后查看上传结果！")
+    console.log("已为您节省上传" + nums + "项文件！")
 
 });
