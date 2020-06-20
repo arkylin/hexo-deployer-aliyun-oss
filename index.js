@@ -11,11 +11,11 @@ hexo.extend.deployer.register('ali-oss', function(args){
     const crypto = require('crypto');
 
     //读取json
-    if(fs.existsSync(path.join(__dirname,'public_md5.json'), 'utf8')){}else{
+    if(fs.existsSync(path.join(__dirname,'../../source/_data/public_md5.json'), 'utf8')){}else{
         var a = "{}";
-        fs.writeFileSync(path.join(__dirname,'public_md5.json'), a)
+        fs.writeFileSync(path.join(__dirname,'../../source/_data/public_md5.json'), a)
     }
-    const public_md5 = JSON.parse(fs.readFileSync(path.join(__dirname,'public_md5.json'), 'utf8'));
+    const public_md5 = JSON.parse(fs.readFileSync(path.join(__dirname,'../../source/_data/public_md5.json'), 'utf8'));
     var a = public_md5;
     var nums = 0;
 
@@ -61,7 +61,7 @@ hexo.extend.deployer.register('ali-oss', function(args){
 
     //写入Json函数
     function write_Json(File_name, New_md5){
-        //var a = JSON.parse(fs.readFileSync(path.join(__dirname,'public_md5.json'), 'utf8'));
+        //var a = JSON.parse(fs.readFileSync(path.join(__dirname,'../../source/_data/public_md5.json'), 'utf8'));
         a[File_name] = New_md5
     }
     //计算MD5函数
@@ -127,7 +127,7 @@ hexo.extend.deployer.register('ali-oss', function(args){
         }
     });
     a = JSON.stringify(a, null, "\t");
-    fs.writeFileSync(path.join(__dirname,'public_md5.json'), a)
+    fs.writeFileSync(path.join(__dirname,'../../source/_data/public_md5.json'), a)
     console.log("oss部署器执行完毕！请稍后查看上传结果！")
     console.log("已为您节省上传" + nums + "项文件！")
 

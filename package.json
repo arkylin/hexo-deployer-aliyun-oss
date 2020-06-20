@@ -1,6 +1,6 @@
 {
   "name": "hexo-deployer-aliyun-oss",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Hexo deployer aliyun oss tool support MD5",
   "main": "index.js",
   "author": "x@xyz.blue",
